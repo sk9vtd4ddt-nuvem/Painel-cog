@@ -1,0 +1,13 @@
+{
+  "name": "painel-cog",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "Server.js",
+  "scripts": {
+    "start": "node Server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2"
+  }
+}
