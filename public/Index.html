@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Painel Cog</title>
+  <link rel="manifest" href="/manifest.json">
+  <style>
+    body{font-family:system-ui;margin:16px}
+    input,select,button{width:100%;padding:12px;margin:8px 0;font-size:16px}
+    pre{white-space:pre-wrap;background:#f4f4f4;padding:12px;border-radius:8px}
+    .box{border:1px solid #ddd;padding:12px;border-radius:10px;margin-top:10px}
+  </style>
+</head>
+<body>
+  <h2>Painel de Consultas</h2>
+
+  <div class="box">
+    <label>Senha do painel</label>
+    <input id="pass" placeholder="Digite sua senha do painel" type="password">
+    <button onclick="salvarSenha()">Salvar senha</button>
+  </div>
+
+  <div class="box">
+    <button onclick="status()">Ver status</button>
+  </div>
+
+  <div class="box">
+    <label>Tipo</label>
+    <select id="type">
+      <option value="nome">nome</option>
+      <option value="cpf">cpf</option>
+      <option value="telefone">telefone</option>
+      <option value="email">email</option>
+    </select>
+
+    <label>Dados</label>
+    <input id="dados" placeholder="Digite os dados...">
+    <button onclick="consulta()">Consultar</button>
+  </div>
+
+  <pre id="out"></pre>
+
+<script>
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js");
+
+function salvarSenha(){
+  const p = document.getElementById("pass").value.trim();
+  localStorage.setItem("panel_pass", p);
+  alert("Senha salva!");
+}
+
+function getPass(){
+  return localStorage.getItem("panel_pass") || "";
+}
+
+async function status(){
+  const r = await fetch("/panel/status", {
+    headers: { "X-Panel-Pass": getPass() }
+  });
+  document.getElementById("out").textContent = await r.text();
+}
+
+async function consulta(){
+  const type = document.getElementById("type").value;
+  const dados = document.getElementById("dados").value.trim();
+  const r = await fetch(`/panel/consulta?type=${encodeURIComponent(type)}&dados=${encodeURIComponent(dados)}`, {
+    headers: { "X-Panel-Pass": getPass() }
+  });
+  document.getElementById("out").textContent = await r.text();
+}
+</script>
+</body>
+</html>
