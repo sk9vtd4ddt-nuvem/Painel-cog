@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Painel COG</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body style="font-family: Arial; padding: 20px">
+  <h2>Painel COG</h2>
+
+  <input id="pass" placeholder="Senha do painel" />
+  <button onclick="consultar()">Consultar Status</button>
+
+  <pre id="out"></pre>
+
+  <script>
+    async function consultar() {
+      const pass = document.getElementById("pass").value;
+      const r = await fetch("/panel/status", {
+        headers: { "x-panel-pass": pass },
+      });
+      const j = await r.json();
+      document.getElementById("out").textContent =
+        JSON.stringify(j, null, 2);
+    }
+  </script>
+</body>
+</html>
